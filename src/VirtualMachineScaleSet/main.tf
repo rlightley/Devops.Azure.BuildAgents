@@ -61,13 +61,6 @@ resource "azurecaf_name" "vnet" {
   clean_input   = true
 }
 
-resource "azurerm_virtual_network" "vnet" {
-  name                = azurecaf_name.vnet.result
-  address_space       = ["10.0.0.0/16"]
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-}
-
 resource "azurecaf_name" "snet" {
   name          = "${var.project_name}-${var.environment}"
   resource_type = "azurerm_subnet"
@@ -75,11 +68,34 @@ resource "azurecaf_name" "snet" {
   clean_input   = true
 }
 
-resource "azurerm_subnet" "snet" {
-  name                 = azurecaf_name.snet.result
-  resource_group_name  = azurerm_resource_group.rg.name
-  virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = ["10.0.2.0/24"]
+resource "azurerm_network_security_group" "sg" {
+  name                = "build-agent-security-group"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  security_rule {
+    name                       = "allow-all"
+    priority                   = 100
+    direction                  = "Outbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "*"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+}
+
+resource "azurerm_virtual_network" "vnet" {
+  name                = azurecaf_name.vnet.result
+  address_space       = ["10.0.0.0/16"]
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  subnet = {
+    name             = azurecaf_name.snet.result
+    address_prefixes = ["10.0.2.0/24"]
+    security_group   = azurerm_network_security_group.sg.id
+  }
 }
 
 resource "azurecaf_name" "vmss" {
