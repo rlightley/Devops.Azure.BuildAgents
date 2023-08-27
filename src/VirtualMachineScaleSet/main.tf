@@ -132,7 +132,7 @@ resource "azurerm_virtual_machine_scale_set_extension" "vmsse" {
   type                         = "CustomScript"
   type_handler_version         = "2.1"
   settings = jsonencode({
-    "script" : ""
+    "script" : "https://raw.githubusercontent.com/rlightley/Devops.Azure.BuildAgents/main/.github/config.sh"
   })
 }
 

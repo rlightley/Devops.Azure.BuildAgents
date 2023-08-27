@@ -3,6 +3,7 @@
 # Install .NET
 sudo apt-get update
 sudo apt-get install -y dotnet-sdk-5.0
+sudo apt-get install -y dotnet-sdk-7.0
 
 # Install Docker
 curl -fsSL https://get.docker.com -o get-docker.sh
