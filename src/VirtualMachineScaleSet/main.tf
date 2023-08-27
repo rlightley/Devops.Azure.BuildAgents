@@ -1,9 +1,10 @@
 terraform {
 
   backend "azurerm" {
+    resource_group_name  = "rg-elearning-core-uks"
     storage_account_name = "academyone"
     container_name       = "tf-state"
-    key                  = "vmss"
+    key                  = "vmss.tfstate"
   }
 
   required_providers {
