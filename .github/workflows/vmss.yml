@@ -57,8 +57,7 @@ jobs:
           tf_actions_working_dir: 'src/VirtualMachineScaleSet'
 
       - name: Terraform Init
-        run: cd src/VirtualMachineScaleSet `
-             terraform init -backend=false
+        run: cd src/VirtualMachineScaleSet terraform init -backend=false
         
       - name: Terraform Plan
         run: terraform plan
