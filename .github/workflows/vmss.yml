@@ -58,7 +58,8 @@ jobs:
 
       - name: Terraform Init
         run: |
-          cd "src/VirtualMachineScaleSet" \
+          cd src \
+          cd VirtualMachineScaleSet \
           terraform init
         
       - name: Terraform Plan
