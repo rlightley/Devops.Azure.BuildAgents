@@ -51,6 +51,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - run: cd src/VirtualMachineScaleSet
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
 
