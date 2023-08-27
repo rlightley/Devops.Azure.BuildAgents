@@ -47,14 +47,15 @@ jobs:
     name: "Plan"
     # needs: terraform-unit-tests
     runs-on: ubuntu-latest
+    defaults:
+      run: 
+        working-directory: src/VirtualMachineScaleSet
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
-        with:
-          tf_actions_working_dir: '../../src/VirtualMachineScaleSet'
 
       - name: Terraform Init
         run: terraform init
