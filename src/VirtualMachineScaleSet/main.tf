@@ -1,9 +1,10 @@
 terraform {
 
-  # uncomment for remote backend
-  # backend "azurerm" {
-
-  # }
+  backend "azurerm" {
+    storage_account_name = "academyone"
+    container_name       = "tf-state"
+    key                  = "vmss"
+  }
 
   required_providers {
     azurerm = {
