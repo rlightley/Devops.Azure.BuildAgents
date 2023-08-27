@@ -53,21 +53,6 @@ locals {
   first_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC+wWK73dCr+jgQOAxNsHAnNNNMEMWOHYEccp6wJm2gotpr9katuF/ZAdou5AaW1C61slRkHRkpRRX9FA9CYBiitZgvCCz+3nWNN7l/Up54Zps/pHWGZLHNJZRYyAB6j5yVLMVHIHriY49d/GZTZVNB8GoJv9Gakwc/fuEZYYl4YDFiGMBP///TzlI4jhiJzjKnEvqPFki5p2ZRJqcbCiF4pJrxUQR/RXqVFQdbRLZgYfJ8xGB878RENq3yQ39d8dVOkq4edbkzwcUmwwwkYVPIoDGsYLaRHnG+To7FvMeyO7xDVQkMKzopTQV8AuKpyvpqu0a9pWOMaiCyDytO7GGN you@me.com"
 }
 
-
-resource "azurecaf_name" "vnet" {
-  name          = "${var.project_name}-${var.environment}"
-  resource_type = "azurerm_virtual_network"
-  suffixes      = [var.location_short]
-  clean_input   = true
-}
-
-resource "azurecaf_name" "snet" {
-  name          = "${var.project_name}-${var.environment}"
-  resource_type = "azurerm_subnet"
-  suffixes      = [var.location_short, "001"]
-  clean_input   = true
-}
-
 resource "azurerm_network_security_group" "sg" {
   name                = "build-agent-security-group"
   location            = azurerm_resource_group.rg.location
@@ -86,16 +71,32 @@ resource "azurerm_network_security_group" "sg" {
   }
 }
 
+resource "azurecaf_name" "vnet" {
+  name          = "${var.project_name}-${var.environment}"
+  resource_type = "azurerm_virtual_network"
+  suffixes      = [var.location_short]
+  clean_input   = true
+}
+
 resource "azurerm_virtual_network" "vnet" {
   name                = azurecaf_name.vnet.result
   address_space       = ["10.0.0.0/16"]
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  subnet = {
-    name             = azurecaf_name.snet.result
-    address_prefixes = ["10.0.2.0/24"]
-    security_group   = azurerm_network_security_group.sg.id
-  }
+}
+
+resource "azurecaf_name" "snet" {
+  name          = "${var.project_name}-${var.environment}"
+  resource_type = "azurerm_subnet"
+  suffixes      = [var.location_short, "001"]
+  clean_input   = true
+}
+
+resource "azurerm_subnet" "snet" {
+  name                 = azurecaf_name.snet.result
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = ["10.0.2.0/24"]
 }
 
 resource "azurecaf_name" "vmss" {
@@ -128,8 +129,9 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
   }
 
   network_interface {
-    name    = "nic-vmss-${var.project_name}-${var.environment}-${var.location_short}"
-    primary = true
+    name                      = "nic-vmss-${var.project_name}-${var.environment}-${var.location_short}"
+    primary                   = true
+    network_security_group_id = azurerm_network_security_group.sg.id
 
     ip_configuration {
       name      = "internal"
