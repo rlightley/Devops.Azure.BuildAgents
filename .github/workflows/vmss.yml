@@ -70,5 +70,18 @@ jobs:
     name: "Apply"
     needs: terraform-plan
     runs-on: ubuntu-latest
+    environment: production
     steps:
-    - run: echo testing mmulti job
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - run: az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform Init
+        run: terraform init
+        
+      - name: Terraform Plan
+        run: terraform apply --auto-approve
