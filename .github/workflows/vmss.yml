@@ -40,6 +40,7 @@ jobs:
 
   terraform-plan:
     name: "Terraform plan"
+    needs: terraform-unit-tests
     runs-on: ubuntu-latest
     steps:
     - run: echo testing mmulti job
