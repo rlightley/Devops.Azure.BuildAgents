@@ -11,7 +11,6 @@ env:
   ARM_CLIENT_SECRET: "${{ secrets.AZURE_CLIENT_SECRET }}"
   TOKEN: "${{ secrets.AZURE_DEVOPS_PAT }}"
   URL: "${{ secrets.AZURE_DEVOPS_URL }}"
-  POOL: default
   AGENT_NAME: VMSS
 jobs:
   # terraform-unit-tests:

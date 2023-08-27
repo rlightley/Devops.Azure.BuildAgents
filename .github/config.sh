@@ -15,7 +15,7 @@ curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
 curl -o vstsagent.tar.gz https://vstsagentpackageurl
 tar zxvf vstsagent.tar.gz
-./config.sh --unattended --url $URL --auth PAT --token $TOKEN --pool $POOL --agent $AGENT_NAME
+./config.sh --unattended --url $URL --auth PAT --token $TOKEN --pool Default --agent $AGENT_NAME
 
 # Start Docker service
 sudo systemctl start docker
