@@ -37,3 +37,9 @@ jobs:
         with:
           sarif_file: results.sarif
           category: checkov
+
+  terraform-plan:
+    name: "Terraform plan"
+    runs-on: ubuntu-latest
+    steps:
+    - run: echo testing mmulti job
