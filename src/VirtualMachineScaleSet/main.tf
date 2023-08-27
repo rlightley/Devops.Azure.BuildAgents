@@ -132,7 +132,7 @@ resource "azurerm_virtual_machine_scale_set_extension" "vmsse" {
   type                         = "CustomScript"
   type_handler_version         = "2.1"
   settings = jsonencode({
-    "script" : "https://academyone.blob.core.windows.net/scripts/agent.sh"
+    "script" : ""
   })
 }
 
